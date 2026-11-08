@@ -30,7 +30,7 @@ check(/class="site-brand"[^>]*>BlocksEstate<span class="site-brand-period">/.tes
 check(!/SOHADOT|portfolio-signature|signature-symbol/i.test(header), "Sohadot branding must not appear in the header");
 check(/href="#acquisition"/.test(header), "Acquisition link must remain in the header");
 check(/SOHADOT ↗/.test(html), "Sohadot portfolio attribution must remain in footer");
-check(/available for strategic acquisition through the Sohadot portfolio/.test(html), "Acquisition ownership attribution missing");
+check(/offered for strategic acquisition through the Sohadot portfolio/.test(html), "Acquisition ownership attribution missing");
 check((html.match(/<section class="section /g)||[]).length === 4, "Four-section editorial structure missing");
 check(!html.includes("architecture-stage") && !html.includes("semantic-bar"), "Rejected hero stage still present");
 check(/class="hero-taxonomy"/.test(html), "Missing wireframe territory strip");
