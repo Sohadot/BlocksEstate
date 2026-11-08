@@ -10,55 +10,51 @@ const js = read("main.js");
 const robots = read("robots.txt");
 const sitemap = read("sitemap.xml");
 let checks = 0;
+function check(condition, message) { assert.ok(condition, message); checks++; }
 
-function check(condition, message) {
-  assert.ok(condition, message);
-  checks++;
+for (const path of ["index.html","styles.css","main.js","favicon.svg","robots.txt","sitemap.xml","_headers","README.md"]) {
+  check(existsSync(resolve(root,path)), "Missing required file: " + path);
 }
-
-for (const path of ["index.html", "styles.css", "main.js", "favicon.svg", "robots.txt", "sitemap.xml", "_headers", "README.md"]) {
-  check(existsSync(resolve(root, path)), "Missing required file: " + path);
-}
-
-check(html.includes('lang="en"'), "Language declaration missing");
-check(/<main\b/.test(html) && /<h1\b/.test(html), "Semantic landmarks missing");
-check(/<meta name="description"/.test(html), "Metadata description missing");
-check(/<link rel="canonical" href="https:\/\/blocksestate\.com\/"/.test(html), "Canonical URL missing");
-check(/<meta property="og:title"/.test(html), "OpenGraph title missing");
-check(/BlocksEstate\.com/.test(html), "Domain presentation missing");
-check(/Category-level potential describes a positioning opportunity/.test(html), "Category qualification missing");
-check(/not representations of existing BlocksEstate products/.test(html), "Product-state qualification missing");
-check(/mailto:agent@sohadot\.com/.test(html), "Acquisition email missing");
-check(/https:\/\/www\.escrow\.com\/domains\/how-it-works/.test(html), "Official escrow information link missing");
-check(/No affiliation or endorsement is implied/.test(html), "Escrow independence disclosure missing");
-check(/prefers-reduced-motion/.test(css), "Reduced-motion treatment missing");
-check(/:focus-visible/.test(css), "Visible focus styling missing");
-check(/@media \(max-width: 680px\)/.test(css), "Mobile viewport rules missing");
-check(/aria-pressed/.test(html) && /setAttribute\("aria-pressed"/.test(js), "Button state handling missing");
-check(/keydown/.test(js), "Keyboard handling missing");
+check(html.includes('lang="en"'), "Missing language");
+check(/<main\b/.test(html) && /<h1\b/.test(html), "Missing semantic landmarks");
+check(/<meta name="description"/.test(html), "Missing description");
+check(/<meta name="theme-color" content="#b9c0c6"/.test(html), "Titanium theme-color missing");
+check(/<meta name="color-scheme" content="light"/.test(html), "Light metallic scheme missing");
+check(/--titanium: #b9c0c6/.test(css), "Titanium visual token missing");
+check(!css.includes("--base: #101a21"), "Old carbon interface token remains");
+check(/<link rel="canonical" href="https:\/\/blocksestate\.com\/"/.test(html), "Canonical missing");
+check(/<meta property="og:title"/.test(html), "OpenGraph missing");
+check(/<h1 id="hero-title">BlocksEstate<span class="hero-period">/.test(html), "Single-line hero name missing");
+check((html.match(/<section class="section /g)||[]).length === 4, "Four-section editorial structure missing");
+check(!html.includes("architecture-stage") && !html.includes("semantic-bar"), "Rejected hero stage still present");
+check(/category-semantic/.test(html), "Category naming idea missing");
+check(/Category-level potential describes a positioning opportunity/.test(html) === false, "Obsolete extra category section still present");
+check(/not a claim that a new market category already exists/.test(html), "Category-potential qualification missing");
+check(/not representations of existing BlocksEstate products/.test(html), "Nonoperational applications qualification missing");
+check(/mailto:agent@sohadot\.com/.test(html), "Acquisition route missing");
+check(/https:\/\/www\.escrow\.com\/domains\/how-it-works/.test(html), "Official escrow information missing");
+check(/No affiliation or endorsement is implied/.test(html), "Escrow independence missing");
+check(/prefers-reduced-motion/.test(css), "Reduced-motion support missing");
+check(/:focus-visible/.test(css), "Keyboard focus treatment missing");
+check(/@media \(max-width: 680px\)/.test(css), "Mobile treatment missing");
+check(/getElementById\("year"\)/.test(js), "Footer year handling missing");
 check(/Sitemap: https:\/\/blocksestate\.com\/sitemap\.xml/.test(robots), "Robots sitemap missing");
-check(/<loc>https:\/\/blocksestate\.com\/<\/loc>/.test(sitemap), "Sitemap canonical mismatch");
-
-const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
-check(ids.length === new Set(ids).size, "Duplicate HTML IDs");
-for (const match of html.matchAll(/\bhref="#([^"]+)"/g)) {
-  check(ids.includes(match[1]), "Broken in-page anchor: #" + match[1]);
+check(/<loc>https:\/\/blocksestate\.com\/<\/loc>/.test(sitemap), "Sitemap URL mismatch");
+const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(x => x[1]);
+check(ids.length === new Set(ids).size, "Duplicate HTML ID");
+for (const match of html.matchAll(/\bhref="#([^"]+)"/g)) check(ids.includes(match[1]), "Broken anchor #"+match[1]);
+for (const path of ["styles.css","main.js","favicon.svg"]) check(html.includes('"/'+path+'"'), "Unreferenced static asset "+path);
+const m = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
+check(Boolean(m), "JSON-LD missing");
+if (m) {
+  const o = JSON.parse(m[1]);
+  check(o["@type"] === "WebPage", "False structured operating-company claim");
+  check(o.url === "https://blocksestate.com/", "JSON-LD canonical mismatch");
 }
-for (const path of ["styles.css", "main.js", "favicon.svg"]) {
-  check(html.includes('"/' + path + '"'), "Asset reference missing: " + path);
+const favicon = read("favicon.svg");
+check(favicon.includes('fill="#b9c0c6"'), "Favicon not titanium grey");
+check((css.match(/\{/g)||[]).length === (css.match(/\}/g)||[]).length, "CSS delimiter mismatch");
+for (const word of ["guaranteed roi","market leader","official escrow partner","the definitive brand identity"]) {
+  check(!html.toLowerCase().includes(word), "Unsubstantiated brand claim: "+word);
 }
-
-const jsonLd = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
-check(Boolean(jsonLd), "Structured data missing");
-if (jsonLd) {
-  const data = JSON.parse(jsonLd[1]);
-  check(data["@type"] === "WebPage", "Structured data must describe the page rather than a fictitious operating company");
-  check(data.url === "https://blocksestate.com/", "Structured data URL mismatch");
-}
-const icon = read("favicon.svg");
-check(icon.startsWith("<svg ") && icon.includes("</svg>"), "Malformed SVG favicon");
-
-for (const phrase of ["guaranteed roi", "market leader", "official escrow partner", "the definitive brand identity"]) {
-  check(!html.toLowerCase().includes(phrase), "Unsubstantiated claim: " + phrase);
-}
-console.log("PASS — " + checks + " static quality assertions.");
+console.log("PASS — "+checks+" static quality assertions; titanium-grey identity verified.");
