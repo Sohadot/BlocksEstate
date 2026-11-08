@@ -24,6 +24,40 @@ check(/--titanium: #b9c0c6/.test(css), "Titanium visual token missing");
 check(!css.includes("--base: #101a21"), "Old carbon interface token remains");
 check(/<link rel="canonical" href="https:\/\/blocksestate\.com\/"/.test(html), "Canonical missing");
 check(/<meta property="og:title"/.test(html), "OpenGraph missing");
+const socialUrl = "https://blocksestate.com/social-preview.jpg";
+const meta = (name) => html.includes(`content="${socialUrl}"`) && html.includes(`"${name}" content="${socialUrl}"`);
+check(meta("og:image"), "Open Graph image must point to the deployed JPEG");
+check(meta("og:image:secure_url"), "Secure OG image URL missing");
+check(meta("twitter:image"), "X preview must use the same JPEG");
+check(/<meta name="twitter:card" content="summary_large_image">/.test(html), "Large X card missing");
+check(/<meta property="og:image:width" content="1200">/.test(html), "OG width missing");
+check(/<meta property="og:image:height" content="630">/.test(html), "OG height missing");
+check(html.includes('<meta property="og:image:type" content="image/jpeg">'), "OG JPEG type missing");
+check(/<meta property="og:image:alt" content="[^"]+">/.test(html), "Accessible OG image alt missing");
+check(/<meta name="twitter:image:alt" content="[^"]+">/.test(html), "Accessible X image alt missing");
+const socialImage = readFileSync(resolve(root, "social-preview.jpg"));
+check(socialImage.length > 25000, "Preview JPEG is suspiciously small");
+check(socialImage[0] === 0xff && socialImage[1] === 0xd8, "Preview must be a JPEG file");
+function jpegDimensions(buffer) {
+  let pos = 2;
+  while (pos < buffer.length - 9) {
+    if (buffer[pos] !== 0xff) { pos++; continue; }
+    while (buffer[pos] === 0xff) pos++;
+    const code = buffer[pos++];
+    if (code === 0xd9 || code === 0xda) break;
+    if (code === 0x00 || code === 0x01 || (code >= 0xd0 && code <= 0xd7)) continue;
+    const len = buffer.readUInt16BE(pos);
+    if (len < 2 || pos + len > buffer.length) throw new Error("Malformed JPEG marker");
+    if (code >= 0xc0 && code <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(code)) {
+      return { height: buffer.readUInt16BE(pos + 3), width: buffer.readUInt16BE(pos + 5) };
+    }
+    pos += len;
+  }
+  throw new Error("JPEG image dimensions not found");
+}
+const dimensions = jpegDimensions(socialImage);
+check(dimensions.width === 1200 && dimensions.height === 630, "Expected a 1200x630 JPEG");
+
 check(/<h1 id="hero-title">BlocksEstate<span class="hero-period">/.test(html), "Single-line hero name missing");
 check((html.match(/<section class="section /g)||[]).length === 4, "Four-section editorial structure missing");
 check(!html.includes("architecture-stage") && !html.includes("semantic-bar"), "Rejected hero stage still present");
