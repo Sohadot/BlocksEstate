@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs>
+ <linearGradient id="titanium" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e4e8ea"/><stop offset=".47" stop-color="#c4ccd1"/><stop offset="1" stop-color="#9da9b2"/></linearGradient>
+ <linearGradient id="faceTop" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#f0f3f3"/><stop offset="1" stop-color="#b4c1c8"/></linearGradient>
+ <linearGradient id="faceFront" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a0afb8"/><stop offset="1" stop-color="#637987"/></linearGradient>
+ <linearGradient id="faceSide" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#5b7180"/><stop offset="1" stop-color="#293e4b"/></linearGradient>
+ <linearGradient id="slate" x1="0" x2="1" y1="0" y2="0"><stop stop-color="#243842"/><stop offset="1" stop-color="#59727c"/></linearGradient>
+ <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse"><path d="M60 0H0V60" fill="none" stroke="#556874" stroke-width=".55" opacity=".2"/></pattern>
+ <pattern id="metal" width="3" height="3" patternUnits="userSpaceOnUse"><path d="M0 0H3" stroke="#fff" stroke-width=".35" opacity=".18"/></pattern>
+</defs>
+<rect width="1200" height="630" fill="url(#titanium)"/>
+<rect width="1200" height="630" fill="url(#metal)" opacity=".75"/>
+<rect x="0" y="0" width="1200" height="630" fill="url(#grid)"/>
+<path d="M0 0V630 M1198 0V630 M0 2H1200" stroke="#758791" stroke-width="2" opacity=".35"/>
+<!-- architectural silhouette; drawn as original layered structural blocks -->
+<g opacity=".97">
+ <path d="M808 101L942 29L1150 149L1014 223Z" fill="url(#faceTop)" stroke="#e7edf0" stroke-width="2"/>
+ <path d="M808 101L1014 223V372L808 255Z" fill="url(#faceFront)" stroke="#c0cbd0" stroke-width="1.5"/>
+ <path d="M1014 223L1150 149V300L1014 372Z" fill="url(#faceSide)" stroke="#9fb2bd" stroke-width="1.5"/>
+ <path d="M922 316L1070 232L1205 311L1057 399Z" fill="url(#faceTop)" stroke="#e4e8e9"/>
+ <path d="M922 316L1057 399V556L922 472Z" fill="url(#faceFront)" stroke="#b0c0c7"/>
+ <path d="M1057 399L1205 311V467L1057 556Z" fill="url(#faceSide)" stroke="#90a4af"/>
+ <path d="M749 364L867 298L985 366L867 432Z" fill="url(#faceTop)" stroke="#f0f2f2"/>
+ <path d="M749 364L867 432V556L749 486Z" fill="#b9c7cd" stroke="#cbd5d8"/>
+ <path d="M867 432L985 366V487L867 556Z" fill="url(#faceSide)" stroke="#889ca7"/>
+ <path d="M848 127L1014 223 M898 154L1014 223 M948 182L1014 223 M838 117V271 M889 147V300 M944 180V333" stroke="#d9e4e6" opacity=".38" fill="none"/>
+ <path d="M1014 223V372 M1057 399V556 M867 432V556" fill="none" stroke="#e3eaeb" opacity=".65"/>
+ <path d="M1050 209L1095 183V325L1050 352Z M1095 183L1130 164V303L1095 325Z" fill="#19323f" opacity=".4"/>
+ <path d="M1088 381L1175 331V460L1088 512Z" fill="#0b2431" opacity=".3"/>
+</g>
+<!-- blueprint construction guides -->
+<g fill="none" stroke="#3d5664" stroke-width="1" opacity=".3">
+ <path d="M735 10V618 M830 10V618 M930 10V618 M1020 10V618 M1110 10V618"/>
+ <path d="M719 90H1190 M719 190H1190 M719 290H1190 M719 390H1190 M719 490H1190"/>
+ <circle cx="928" cy="312" r="196" stroke-dasharray="5 10"/>
+ <path d="M730 528L1187 263" stroke-dasharray="7 10"/>
+</g>
+<!-- left foreground editorial panel -->
+<path d="M0 0H750V630H0Z" fill="#d6dde0" opacity=".47"/>
+<path d="M35 38H1165" stroke="#576c79" stroke-width="1" opacity=".65"/>
+<g font-family="Arial,Helvetica,sans-serif" fill="#1c2c36">
+ <text x="63" y="78" font-size="16" font-weight="700" letter-spacing="5">CATEGORY-LEVEL BRAND OPPORTUNITY</text>
+ <text x="57" y="215" font-size="102" font-weight="800" letter-spacing="-8">BlocksEstate<tspan fill="#5a7480">.</tspan></text>
+ <path d="M63 239H688" stroke="url(#slate)" stroke-width="4"/>
+ <text x="63" y="309" font-size="43" font-weight="600" letter-spacing="-2.6">The Next Architecture</text>
+ <text x="63" y="356" font-size="43" font-weight="600" letter-spacing="-2.6">of Real Estate.</text>
+ <text x="64" y="405" font-size="19" letter-spacing=".2" fill="#334852">One name. Multiple real estate futures.</text>
+ <text x="64" y="436" font-size="19" fill="#334852">A foundation for a category-scale identity.</text>
+</g>
+<path d="M63 469H700" stroke="#748792" stroke-width="1"/>
+<g font-family="Arial,Helvetica,sans-serif" fill="#283e4b">
+ <text x="64" y="509" font-size="13" font-weight="700" letter-spacing="1.5">PROPTECH</text>
+ <text x="203" y="509" font-size="13" font-weight="700" letter-spacing="1.5">OWNERSHIP</text>
+ <text x="377" y="509" font-size="13" font-weight="700" letter-spacing="1.5">DATA SYSTEMS</text>
+ <text x="573" y="509" font-size="13" font-weight="700" letter-spacing="1.5">CONSTRUCTION</text>
+</g>
+<g fill="none" stroke="#758a95" opacity=".75"><path d="M183 488V516 M356 488V516 M557 488V516"/></g>
+<rect x="0" y="559" width="1200" height="71" fill="#243944"/>
+<text x="63" y="602" font-family="Arial,Helvetica,sans-serif" fill="#f2f3f3" font-size="17" font-weight="750" letter-spacing="2.5">BLOCKSESTATE.COM</text>
+<text x="1160" y="602" text-anchor="end" font-family="Arial,Helvetica,sans-serif" fill="#c0cdd3" font-size="14" letter-spacing="2">STRATEGIC ACQUISITION · SOHADOT</text>
+</svg>
