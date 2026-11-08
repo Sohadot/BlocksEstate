@@ -119,6 +119,24 @@ em { font-family: Georgia, "Times New Roman", serif; font-weight: 400; }
 .text-action:hover { color: #63747d; }
 .text-action span { padding-left: .45rem; }
 
+/* Three static territories from the original wireframe — not dashboard controls. */
+.hero-taxonomy {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid #798892; border-bottom: 1px solid #798892;
+  background: rgba(221,226,228,.40);
+}
+.hero-taxonomy span {
+  display: flex; align-items: center; gap: clamp(.8rem, 2vw, 2rem);
+  padding: 1.7rem var(--spacing); color: #283f4b;
+  font-size: .75rem; font-weight: 850; letter-spacing: .14em;
+  border-right: 1px solid #84919a;
+}
+.hero-taxonomy span:last-child { border-right: 0; }
+.hero-taxonomy b { font-size: .64rem; color: #60717a; }
+@media (max-width: 680px) {
+  .hero-taxonomy span { font-size: .58rem; letter-spacing: .04em; padding: 1.3rem .6rem; gap: .4rem; }
+  .hero-taxonomy b { font-size: .5rem; }
+}
 /* 01 — CONCEPTUAL SHIFT. ASYMMETRIC ARCHITECTURAL SPLIT */
 .section { padding: 0 var(--spacing); }
 .section-rail { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 2rem 0; border-bottom: 1px solid var(--line); color: #4b606b; }
