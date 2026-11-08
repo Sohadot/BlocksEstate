@@ -9,14 +9,15 @@ The project positions the domain as a possible category-level identity at the in
 ## Scope
 
 - One English-language, responsive, static page.
-- Original architectural visual and four switchable semantic interpretations of the name.
-- Distinct concept, potential applications, strategic value and acquisition sections.
+- Titanium-grey architectural visual language, a commanding single-line hero, and a restrained semantic interpretation of Blocks + Estate inside the conceptual shift.
+- The original four-section hierarchy: Conceptual Shift, Strategic Domains of Application, Strategic Value and Sovereign Acquisition.
 - Acquisition inquiries via agent@sohadot.com.
 - Optional use of Escrow.com, following mutual agreement. Escrow.com is independent; no affiliation, endorsement, payment processing or live transaction initiation is represented.
 - Canonical URL, OpenGraph metadata, truthful structured data, robots and sitemap.
-- Accessibility: skip link, semantic headings, native buttons, keyboard and focus support, reduced-motion option.
+- Accessibility: skip link, semantic headings, native links, keyboard and focus support, reduced-motion option.
 - Dependency-free HTML, CSS, and JavaScript. No cookies, analytics, frameworks or external fonts.
 - No database, form handler, pretend product, generated inventory or price claims.
+- Visual palette: satin titanium #B9C0C6, pale titanium #D9DEE1, graphite ink #18232B, and restrained mineral-blue graphite accents. No carbon-black background.
 
 ## Development
 
