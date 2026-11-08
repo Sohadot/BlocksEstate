@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://blocksestate.com/sitemap.xml
