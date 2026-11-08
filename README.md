@@ -33,6 +33,17 @@ Quality checks require Node.js 20 or later:
 
 No dependency installation is needed.
 
+
+## Social sharing preview
+
+- The Open Graph and X share card both use the **same real image**: `https://blocksestate.com/social-preview.jpg`.
+- `social-preview.jpg` is a committed **1200 × 630 JPEG**, generated from the original editable `social-preview.svg` on the social-preview feature branch.
+- The image leads with **BlocksEstate**, a titanium-grey architectural visual and its category-level positioning. Sohadot appears only as an acquisition attribution at the bottom, not as the leading identity.
+- The Open Graph fields include `og:image`, `og:image:secure_url`, MIME type, dimensions and accessible alternative text; X uses `summary_large_image`, `twitter:image` and alternative text.
+- Keep the JPEG publicly accessible over HTTPS without login, redirects to access-controlled resources, or robots blocking. Static quality checks validate the file and metadata together.
+- When published, verify the live `/social-preview.jpg` returns **HTTP 200** with **image/jpeg**, and verify LinkedIn / Facebook / X / WhatsApp previews. Social crawlers can retain old cards in cache; use platform re-scrape tools where available.
+- The image is not in production merely because the PR has been opened. Merge, deployment and public crawler verification are separate gates.
+
 ## Hosting
 
 Static hosting recommended. The checked-in files may be deployed as-is with index.html at the site root. For Cloudflare Pages, use a static/no-framework configuration and publish the directory containing index.html, subject to the hosting account's supported settings. Configure the custom domain, SSL, canonical-host redirect and DNS separately.
