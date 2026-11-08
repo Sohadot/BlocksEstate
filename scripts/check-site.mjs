@@ -32,7 +32,7 @@ check(meta("twitter:image"), "X preview must use the same JPEG");
 check(/<meta name="twitter:card" content="summary_large_image">/.test(html), "Large X card missing");
 check(/<meta property="og:image:width" content="1200">/.test(html), "OG width missing");
 check(/<meta property="og:image:height" content="630">/.test(html), "OG height missing");
-check(/<meta property="og:image:type" content="image\\/jpeg">/.test(html) || html.includes('<meta property="og:image:type" content="image/jpeg">'), "OG JPEG type missing");
+check(html.includes('<meta property="og:image:type" content="image/jpeg">'), "OG JPEG type missing");
 check(/<meta property="og:image:alt" content="[^"]+">/.test(html), "Accessible OG image alt missing");
 check(/<meta name="twitter:image:alt" content="[^"]+">/.test(html), "Accessible X image alt missing");
 const socialImage = readFileSync(resolve(root, "social-preview.jpg"));
