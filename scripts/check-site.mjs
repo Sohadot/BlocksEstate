@@ -59,6 +59,12 @@ const dimensions = jpegDimensions(socialImage);
 check(dimensions.width === 1200 && dimensions.height === 630, "Expected a 1200x630 JPEG");
 
 check(/<h1 id="hero-title">BlocksEstate<span class="hero-period">/.test(html), "Single-line hero name missing");
+const header = html.match(/<header class="site-header"[\s\S]*?<\/header>/)?.[0] || "";
+check(/class="site-brand"[^>]*>BlocksEstate<span class="site-brand-period">/.test(header), "BlocksEstate must lead the header");
+check(!/SOHADOT|portfolio-signature|signature-symbol/i.test(header), "Sohadot branding must not appear in the header");
+check(/href="#acquisition"/.test(header), "Acquisition link must remain in the header");
+check(/SOHADOT ↗/.test(html), "Sohadot portfolio attribution must remain in footer");
+check(/offered for strategic acquisition through the Sohadot portfolio/.test(html), "Acquisition ownership attribution missing");
 check((html.match(/<section class="section /g)||[]).length === 4, "Four-section editorial structure missing");
 check(!html.includes("architecture-stage") && !html.includes("semantic-bar"), "Rejected hero stage still present");
 check(/class="hero-taxonomy"/.test(html), "Missing wireframe territory strip");
