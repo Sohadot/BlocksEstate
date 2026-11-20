@@ -9,6 +9,8 @@ const css = read("styles.css");
 const js = read("main.js");
 const robots = read("robots.txt");
 const sitemap = read("sitemap.xml");
+const cname = read("CNAME").trim();
+const headers = read("_headers");
 let checks = 0;
 function check(condition, message) { assert.ok(condition, message); checks++; }
 
@@ -83,6 +85,29 @@ check(/@media \(max-width: 680px\)/.test(css), "Mobile treatment missing");
 check(/getElementById\("year"\)/.test(js), "Footer year handling missing");
 check(/Sitemap: https:\/\/blocksestate\.com\/sitemap\.xml/.test(robots), "Robots sitemap missing");
 check(/<loc>https:\/\/blocksestate\.com\/<\/loc>/.test(sitemap), "Sitemap URL mismatch");
+check(cname === "blocksestate.com", "Legacy GitHub Pages CNAME must match canonical host during cutover");
+const headerLines = headers.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+check(headerLines[0] === "/*", "Cloudflare static _headers must cover all paths");
+const parsedHeaders = new Map();
+for (const line of headerLines.slice(1)) {
+  const match = line.match(/^([A-Za-z][A-Za-z0-9-]*):\s*(.+)$/);
+  check(Boolean(match), `Malformed Cloudflare _headers directive: ${line}`);
+  if (!match) continue;
+  const name = match[1].toLowerCase();
+  check(!parsedHeaders.has(name), `Duplicate security header: ${name}`);
+  parsedHeaders.set(name, match[2]);
+}
+for (const [name, value] of Object.entries({
+  "x-content-type-options": "nosniff",
+  "referrer-policy": "strict-origin-when-cross-origin",
+  "x-frame-options": "DENY",
+  "permissions-policy": "camera=(), microphone=(), geolocation=()",
+})) {
+  check(parsedHeaders.get(name) === value, `Missing or changed Cloudflare security header: ${name}`);
+}
+const readme = read("README.md");
+check(readme.includes("GitHub Pages does not process `_headers`"), "Document current GitHub Pages header limitation");
+check(readme.includes("Cloudflare Pages") && readme.includes("Workers Static Assets"), "Document Cloudflare deployment targets");
 const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(x => x[1]);
 check(ids.length === new Set(ids).size, "Duplicate HTML ID");
 for (const match of html.matchAll(/\bhref="#([^"]+)"/g)) check(ids.includes(match[1]), "Broken anchor #"+match[1]);

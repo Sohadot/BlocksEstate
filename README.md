@@ -33,6 +33,11 @@ Quality checks require Node.js 20 or later:
 
 No dependency installation is needed.
 
+`npm run check` also creates a clean `dist/` release directory with an explicit
+allowlist of eight public assets. Private acquisition material, pricing, buyer
+lists, repository scripts and source SVG files do not belong in `dist/`. The
+generated `dist/` directory is ignored by Git and must not be committed.
+
 
 ## Social sharing preview
 
@@ -44,13 +49,45 @@ No dependency installation is needed.
 - When published, verify the live `/social-preview.jpg` returns **HTTP 200** with **image/jpeg**, and verify LinkedIn / Facebook / X / WhatsApp previews. Social crawlers can retain old cards in cache; use platform re-scrape tools where available.
 - The image is not in production merely because the PR has been opened. Merge, deployment and public crawler verification are separate gates.
 
-## Hosting
+## Hosting and security (verified November 20, 2026)
 
-Static hosting recommended. The checked-in files may be deployed as-is with index.html at the site root. For Cloudflare Pages, use a static/no-framework configuration and publish the directory containing index.html, subject to the hosting account's supported settings. Configure the custom domain, SSL, canonical-host redirect and DNS separately.
+The live site currently responds from **GitHub Pages**, identifiable by its
+`x-github-request-id` response header. GitHub Pages does not process `_headers`;
+the checked-in file is **not** evidence that HTTP security headers are active.
+The current live homepage did not send the four headers specified in `_headers`.
+GitHub Pages is still the source of the public site until a migration completes.
 
-The _headers file provides basic security-related headers on platforms (such as Cloudflare Pages) that support that convention. A custom Content-Security-Policy should be evaluated with the actual hosting stack before release.
+The chosen future host may be **Cloudflare Pages** or **Cloudflare Workers Static
+Assets**: both support `_headers` for static asset responses. Dynamic Worker or
+Pages Function responses need separate handling. No DNS or hosting settings are
+changed by this repository.
 
-The intended canonical host is https://blocksestate.com/. Confirm domain control, live resolution and any www redirect before production deployment.
+For **Cloudflare Pages Git integration**, connect `Sohadot/BlocksEstate` and use:
+
+- Build command: `npm run build`
+- Build output directory: `dist`
+- Project root: repository root
+- Production branch: `main` (only after review and merge)
+
+For **Workers Static Assets**, the same `dist/` output and `_headers` can be
+used, but deployment requires an appropriate Workers static-assets project
+configuration. This repository does not yet configure or deploy a Worker.
+
+First validate the Cloudflare preview deployment and its security headers.
+Then, in a separate controlled cutover, configure DNS, the custom domain, TLS
+and redirects for `https://blocksestate.com/`. Keep the current GitHub Pages
+configuration intact until the Cloudflare deployment has been verified.
+
+    npm run check:live
+    npm run check:live -- --require-security-headers
+
+The first command checks the public homepage and image, warning if any intended
+security header is absent. The second also **fails** when those headers are
+missing or different, and is intended for after the Cloudflare cutover.
+Evaluate any Content-Security-Policy against the actual deployed site rather
+than adding an untested policy. Source guidance:
+[Pages static headers](https://developers.cloudflare.com/pages/configuration/headers/)
+and [Workers Static Assets headers](https://developers.cloudflare.com/workers/static-assets/headers/).
 
 ## Acquisition handling
 
