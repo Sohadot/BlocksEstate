@@ -5,8 +5,7 @@
   "description": "BlocksEstate.com: a static conceptual and acquisition landing page for Sohadot.",
   "scripts": {
     "test": "node scripts/check-site.mjs",
-    "check": "node --check main.js && node scripts/check-site.mjs && node scripts/build-static.mjs",
-    "build": "node scripts/build-static.mjs",
+    "check": "node --check main.js && node scripts/check-site.mjs",
     "check:live": "node scripts/check-live.mjs"
   },
   "engines": {

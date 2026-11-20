@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 
 const origin = "https://blocksestate.com";
 const requireSecurity = process.argv.includes("--require-security-headers");
+const requireCloudflare = process.argv.includes("--require-cloudflare-edge");
 const expectedHeaders = {
   "x-content-type-options": "nosniff",
   "referrer-policy": "strict-origin-when-cross-origin",
@@ -33,17 +34,21 @@ try {
   const absent = Object.entries(expectedHeaders).filter(([name, value]) =>
     page.headers.get(name) !== value,
   );
-  const host = page.headers.has("x-github-request-id") ? "GitHub Pages" :
-    page.headers.has("cf-ray") ? "Cloudflare edge" : "unidentified";
+  const cloudflareSeen = page.headers.has("cf-ray");
+  const host = cloudflareSeen ? "Cloudflare proxy → GitHub Pages" :
+    page.headers.has("x-github-request-id") ? "GitHub Pages (direct)" : "unidentified";
 
   console.log(`PASS — Live homepage and social image respond correctly (${host}).`);
+  if (requireCloudflare && !cloudflareSeen) {
+    throw new Error("Cloudflare edge was not detected; expected a CF-Ray response header");
+  }
   if (absent.length) {
     const details = absent.map(([name, value]) =>
       `${name}: expected ${value}; got ${page.headers.get(name) ?? "(missing)"}`,
     ).join("\n  ");
     const message = `Security headers are not yet verified:\n  ${details}`;
     if (requireSecurity) throw new Error(message);
-    console.warn(`WARN — ${message}\nUse --require-security-headers after Cloudflare cutover.`);
+    console.warn(`WARN — ${message}\nEnforce these at the Cloudflare proxy using response-header rules.`);
   } else {
     console.log("PASS — Live static security headers match the intended Cloudflare policy.");
   }

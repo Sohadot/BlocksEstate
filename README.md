@@ -33,12 +33,6 @@ Quality checks require Node.js 20 or later:
 
 No dependency installation is needed.
 
-`npm run check` also creates a clean `dist/` release directory with an explicit
-allowlist of eight public assets. Private acquisition material, pricing, buyer
-lists, repository scripts and source SVG files do not belong in `dist/`. The
-generated `dist/` directory is ignored by Git and must not be committed.
-
-
 ## Social sharing preview
 
 - The Open Graph and X share card both use the **same real image**: `https://blocksestate.com/social-preview.jpg`.
@@ -51,43 +45,46 @@ generated `dist/` directory is ignored by Git and must not be committed.
 
 ## Hosting and security (verified November 20, 2026)
 
-The live site currently responds from **GitHub Pages**, identifiable by its
-`x-github-request-id` response header. GitHub Pages does not process `_headers`;
-the checked-in file is **not** evidence that HTTP security headers are active.
-The current live homepage did not send the four headers specified in `_headers`.
-GitHub Pages is still the source of the public site until a migration completes.
+**GitHub is the sole source of site code and releases. GitHub Pages remains the
+origin host. Cloudflare DNS proxy is an optional security and CDN layer in front
+of that origin, not a replacement for the origin or a second deployment.**
 
-The chosen future host may be **Cloudflare Pages** or **Cloudflare Workers Static
-Assets**: both support `_headers` for static asset responses. Dynamic Worker or
-Pages Function responses need separate handling. No DNS or hosting settings are
-changed by this repository.
+The live site currently responds directly from GitHub Pages, identifiable by
+its `x-github-request-id` header. GitHub Pages does not process `_headers`;
+the checked-in file is a reference policy only and **does not apply security
+headers**. The November 20 live response lacked the four headers specified in
+that file. The Cloudflare edge must add these headers through **Response Header
+Transform Rules** or an appropriate Managed Transform, when enabled.
 
-For **Cloudflare Pages Git integration**, connect `Sohadot/BlocksEstate` and use:
+If Cloudflare protection is activated:
 
-- Build command: `npm run build`
-- Build output directory: `dist`
-- Project root: repository root
-- Production branch: `main` (only after review and merge)
+1. Keep the GitHub Pages custom-domain configuration and `CNAME` unchanged.
+   Preserve the existing GitHub Pages origin targets in Cloudflare DNS; proxy
+   only the intended web records (orange cloud). Do not proxy MX or change
+   email-routing, SPF, DKIM or DMARC records.
+2. Verify the GitHub Pages origin HTTPS certificate, then use Cloudflare
+   SSL/TLS **Full (strict)** where the origin configuration supports it; avoid
+   Flexible mode. Confirm both apex and `www` redirects after activation.
+3. Enable suitable Cloudflare edge protections and configure desired response
+   headers. The `_headers` file is **not** an importable Cloudflare DNS or
+   Transform Rules configuration.
+4. Verify the page, acquisition email link, `robots.txt`, the 1200x630 social
+   image and its public crawler access after Cloudflare proxying. Avoid blanket
+   challenges that could block legitimate social preview crawlers.
 
-For **Workers Static Assets**, the same `dist/` output and `_headers` can be
-used, but deployment requires an appropriate Workers static-assets project
-configuration. This repository does not yet configure or deploy a Worker.
-
-First validate the Cloudflare preview deployment and its security headers.
-Then, in a separate controlled cutover, configure DNS, the custom domain, TLS
-and redirects for `https://blocksestate.com/`. Keep the current GitHub Pages
-configuration intact until the Cloudflare deployment has been verified.
+No Cloudflare DNS, SSL/TLS, WAF or Rules settings are changed by this repository.
+All actual configuration changes must be made and validated in Cloudflare.
 
     npm run check:live
-    npm run check:live -- --require-security-headers
+    npm run check:live -- --require-cloudflare-edge --require-security-headers
 
 The first command checks the public homepage and image, warning if any intended
-security header is absent. The second also **fails** when those headers are
-missing or different, and is intended for after the Cloudflare cutover.
-Evaluate any Content-Security-Policy against the actual deployed site rather
-than adding an untested policy. Source guidance:
-[Pages static headers](https://developers.cloudflare.com/pages/configuration/headers/)
-and [Workers Static Assets headers](https://developers.cloudflare.com/workers/static-assets/headers/).
+security header is absent. The second requires a Cloudflare proxy response
+(`CF-Ray`) **and** all intended security headers; use it after enabling the
+proxy. A custom Content-Security-Policy needs separate review and live testing.
+Official guidance: [Cloudflare proxy status](https://developers.cloudflare.com/dns/proxy-status/),
+[Full (strict)](https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/full-strict/),
+[Response Header Transform Rules](https://developers.cloudflare.com/rules/transform/response-header-modification/).
 
 ## Acquisition handling
 
